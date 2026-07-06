@@ -1,0 +1,73 @@
+;;A first lexer OwO
+
+(in-system :eccentric)
+
+(danger-board
+  (:risk 0
+   :name 'Houdini
+   :feel +poker-face+
+   :msg "It seems that you broke free from char domain")
+  (:risk 0
+   :name 'Taxonomy
+   :feel +frown+
+   :msg "It would be nice if you avoid mixing types here"))
+
+(strdef state
+  "this models the state of the NFA"
+  (position 0 :type linat)
+  (successor 'nil :type tag))
+
+(strdef nfa
+  "This model of a NFA just models jumping across and accepting states
+  as navigating through tagged code segments"
+  (engine (~> ((void . x)) (nil)) :type func))
+
+(fundef success ((char . x))
+  "This function just signals that the NFA got to the accepting state"
+  (bit . yep))
+
+(fundef matcha
+  ((char . x)
+   (txt . str)
+   (ginat . curdex)
+   (tag . next-node))
+  "This is just a formalization of running a char NFA"
+  (state .
+    (let (((ginat . nexdex) (1+ curdex)))
+      (if (char= (sdx str curdex) x)
+        (make-state
+        :position nexdex
+        :successor next-node)))))
+
+(astdef or-nfa ((char . letter) (tag . node))
+  "This babe generates ,,or,, engines given a character and a machine for the thompson NFA"
+  (let* (((tag . traversed) (gentag "TRAVERSED"))
+         ((tag . coin) (gentag "COIN")))
+  `(~> ((char . ,coin))
+     (state .
+       (let (((linat . ,traversed) 0))
+         (incf ,traversed 1)
+         (incf ,traversed 2)
+         ())))))
+
+(fixdef (char . +epsilon+) #\Null
+  "This just models an epsilon move trigger in the NFA")
+
+(fixdef ((txt 10) . +d+) "0123456789"
+  "This is just the meta-character domain for \d")
+
+(fixdef ((txt 63) . +w+)
+  "aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ0123456789_"
+  "This is just the meta-character domain for \w")
+
+;I'm only centering on UNIX systems (characters wise) for now so that
+;this project can come to life
+(fixdef ((txt 3) . +s+)
+  (txt #\Tab #\Space #\New_Line)
+  "This is just the meta-character domain for \s")
+
+(fixdef ((txt 256) . +dot+)
+  (map txt
+    #'(~> ((linat . x)) (char . (trans linat char x)))
+    (>> linat x for x in (rng 0 255)))
+    "This is just the meta-character domain for .")

@@ -1,0 +1,10 @@
+# Common Lisp compiled binaries and caches
+*.fasl
+*.dx64fsl
+*.lx64fsl
+.slime/
+.sly/
+
+# Editor temporary backup files
+*~
+\#*\#
