@@ -1,7 +1,34 @@
 ;;; this is where the IR will live. It should absorb the ISA of
 ;;; a CPU and: translate states; define defective states;
 ;;; define errors and their danger levels;
-;;; sequence states and allow live interaction with it;
+;;; sequence states and allow live interaction with it.
+;;; I try to think of it as a more alive version of an agnostic driver
+
+;;; # Here I layout my assumptions and conventions:
+;;;   ## about word size and size conventions:
+;;;      CPU's are for me 64 bits.
+;;;      "li" or "l" stands for little so if you read linat is a
+;;;      little natural number
+;;;      (or what you would classically call an unint8)
+;;;      mi/m => middling => 16 bits
+;;;      hu/h => huge => 32 bits
+;;;      gi/g => gigantormous => 64 bits.
+;;;   ## registers as structures:
+;;;      1. Since architectures only agree on having direct access the lower
+;;;      32 bit part of a register. Then access to their subdivisions
+;;;      must then be seen as actions on the registers.
+;;;      2. Architectures seem to agree that there are "special" registers
+;;;      so structs must capture their use cases "jobs"
+;;;   ## job conventions:
+;;;      0 => general purpose
+;;;      1 => instruction pointer
+;;;      2 => instruction holder
+;;;      3 => flaging/signaling
+
+(strdef (gireg . 'make-gireg)
+  "This is the structure appended onto the register concept"
+  ((ginat . id) 0)
+  ((linat . job) 0))
 
 important note for the curious minds. I use LLMS to get high
 overviews of complex topics when learning them for the first time
