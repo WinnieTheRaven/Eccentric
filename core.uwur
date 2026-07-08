@@ -28,7 +28,8 @@
 (strdef (gireg . 'make-gireg)
   "This is the structure appended onto the register concept"
   ((ginat . id) 0)
-  ((linat . job) 0))
+  ((linat . job) 0)
+  ((ginat . size) 0))
 
 important note for the curious minds. I use LLMS to get high
 overviews of complex topics when learning them for the first time
