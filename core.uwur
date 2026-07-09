@@ -7,12 +7,17 @@
 ;;; # Here I layout my assumptions and conventions:
 ;;;   ## about word size and size conventions:
 ;;;      CPU's are for me 64 bits.
-;;;      "li" or "l" stands for little so if you read linat is a
-;;;      little natural number
-;;;      (or what you would classically call an unint8)
-;;;      mi/m => middling => 16 bits
-;;;      hu/h => huge => 32 bits
-;;;      gi/g => gigantormous => 64 bits.
+;;;      "ti" or "t" stands for tiny so if you read tinat is a
+;;;      tiny natural number
+;;;      (or what you would classically call an unint8).
+;;;      ti/t => tiny => 8 bits
+;;;      li/l => little => 16 bits
+;;;      mi/m => middling => 32 bits
+;;;      bi/b => biggie => 64 bits
+;;;      hu/h => humongous => 128 bits
+;;;      gi/g => gigantormous => 256 bits
+;;;      mo/m => monstrous => 512 bits
+;;;      ri/r => ridiculous => 1024 bits.
 ;;;   ## registers as structures:
 ;;;      1. Since architectures only agree on having direct access the lower
 ;;;      32 bit part of a register. Then access to their subdivisions
@@ -21,15 +26,16 @@
 ;;;      so structs must capture their use cases "jobs"
 ;;;   ## job conventions:
 ;;;      0 => general purpose
-;;;      1 => instruction pointer
-;;;      2 => instruction holder
-;;;      3 => flaging/signaling
+;;;      1 => floating point or SIMD stuff
+;;;      2 => instruction pointer
+;;;      3 => instruction holder
+;;;      4 => flaging/signaling
 
-(strdef (gireg . 'make-gireg)
-  "This is the structure appended onto the register concept"
-  ((ginat . id) 0)
-  ((linat . job) 0)
-  ((ginat . size) 0))
+(strdef (bireg . 'make-bireg)
+  "This is the structure appended onto the general register concept"
+  ((hunat . id) 0)
+  ((tinat . job) 0)
+  ((binat . value) 0))
 
 important note for the curious minds. I use LLMS to get high
 overviews of complex topics when learning them for the first time
