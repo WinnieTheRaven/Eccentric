@@ -12,7 +12,7 @@
 ;;;      (or what you would classically call an unint8).
 ;;;      ti/t => tiny => 8 bits
 ;;;      li/l => little => 16 bits
-;;;      mi/m => middling => 32 bits
+;;;      co/c => common => 32 bits
 ;;;      bi/b => biggie => 64 bits
 ;;;      hu/h => humongous => 128 bits
 ;;;      gi/g => gigantormous => 256 bits
