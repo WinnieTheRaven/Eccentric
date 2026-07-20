@@ -1,0 +1,57 @@
+	# This program is an attempt to build a chain of two Finite State Transducers
+	# FST number one should input raw text with S-expressions and output an AST
+	# FST number two should input the AST from FST-1 and output x86-64 code
+	# all of this with the hope of building a bootstrap point for the smallest
+	# nessesary core from wich the Eccentric IR can be self hosted and then build
+	# up to the front-end language.
+	# First thing we need to define is THE NIL list.
+	# For that I just think it should be a constant 16 byte block with
+	# the lower half referencing the upper half and the upper half
+	# referencing the lower half.
+	# The next three lines define the outline of a cons-cell
+	.equ cons_car, 0	# Cons starting point.
+	.equ cons_cdr, 8	# car end.
+	.equ cons_size, 16	# cdr end.
+	# In this section we define the NIL stuff
+	.section .rodata
+	.align 16	# we reserve 16 bytes of memory to store the NIL
+NIL:	# The nil is defined here
+NILCAR:	.quad NILCDR	# The lower part references de upper half
+NILCDR:	.quad NILCAR	# The upper part references the lower half
+	# Then we need to define truth values
+	# In this section the truth values are defined
+	.align 8	# We only need 2 bytes for each value
+TRUTH_YEP:	.byte 0x01	# true Stuff
+TRUTH_NOP:	.byte 0x00	# false Stuff
+	# I might be wrong about implementation details. But I feel that functions that
+	# check cons-ness and truthy-ness (as type) and truth values individually
+	# shold be defined in the IR
+	# --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> -->
+	# This section will try to define a first FST that will take raw text with
+	# S-expressions and output an AST made of cons-cells
+	# --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> -->
+	# This FST should consist of 2 sub-machines:
+	# The first machine (which we will call Norie) will ignore comments and
+	# trigger errors when non printable characters are found.
+	# The second machine (called Tribbie) will process the rest of
+	# the valid characters and construct an AST
+	# (no matter if the tree is full of rubbish).
+	# Take for example the following source code:
+	# (TBH this example is mainly for me. I'm deeply afraid of this project)
+	# ```Eccentric
+	# ;;;aasliduhfgalsiubf
+	# #|scñdouiunñoincsdpoinñ{outline
+	# asdikfjbaoubsdouba''90'¿0u|#
+	#
+	# ((a r (x))
+	#   (d e (f  g) h))```
+	#
+	# It should be processed by Tribbie into:
+	# [o|o]------------------------[o|o]---NIL
+	#  |                            |
+	# [o|o]---[o|o]---[o|o]---NIL  [o|o]---[o|o]---[o|o]-----------------[o|o]---NIL
+	#  |       |       |            |       |       |                     |
+	#  a       r      [o|o]---NIL   d       e      [o|o]---[o|o]---NIL    h
+	#                  |                            |       |
+	#                  x                            f       g
+	#
