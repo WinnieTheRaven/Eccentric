@@ -7,7 +7,7 @@
      _///||\\\_
     //¨¨/¨/¨¨¨\\
     ---(`(`----- ::WVJ
-Hacking with me, annon?
+Hacking with me, anon?
 ~~~
 
 This is a live systems language project which aims to append custom DSLs and algebraic structure onto hardware.
