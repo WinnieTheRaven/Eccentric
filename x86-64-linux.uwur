@@ -6,7 +6,7 @@
 	# up to the front-end language.
 	# First thing we need to define is THE NIL list.
 	# For that I just think it should be a constant 16 byte block with
-	# the lower half referencing the upper half and the upper half
+	# both the upper and lower halfs referencing NIL itself
 	# referencing the lower half.
 	# The next three lines define the outline of a cons-cell
 	.equ cons_car, 0	# Cons starting point.
@@ -16,11 +16,11 @@
 	.section .rodata
 	.align 16	# we reserve 16 bytes of memory to store the NIL
 NIL:	# The nil is defined here
-NILCAR:	.quad NILCDR	# The lower part references de upper half
-NILCDR:	.quad NILCAR	# The upper part references the lower half
+NILCAR:	.quad NIL	# The lower part references de upper half
+NILCDR:	.quad NIL	# The upper part references the lower half
 	# Then we need to define truth values
 	# In this section the truth values are defined
-	.align 8	# We only need 2 bytes for each value
+	.align 8	# We only need 2 bytes for both values
 TRUTH_YEP:	.byte 0x01	# true Stuff
 TRUTH_NOP:	.byte 0x00	# false Stuff
 	# I might be wrong about implementation details. But I feel that functions that

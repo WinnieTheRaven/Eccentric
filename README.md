@@ -1,8 +1,13 @@
 # Eccentric
 
 ```Eccentric
-
-```
+       	__
+      ¨¨)°\
+     ./~~\\~~\.
+     _///||\\\_
+    //¨¨/¨/¨¨¨\\
+    ---(`(`----- ::WVJ
+Hacking with me, annon?```
 
 This is a live systems language project which aims to append custom DSLs and algebraic structure onto hardware.
 
