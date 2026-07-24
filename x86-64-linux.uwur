@@ -18,11 +18,17 @@
 NIL:	# The nil is defined here
 NILCAR:	.quad NIL	# The lower part references de upper half
 NILCDR:	.quad NIL	# The upper part references the lower half
-	# Then we need to define truth values
-	# In this section the truth values are defined
-	.align 8	# We only need 2 bytes for both values
-TRUTH_YEP:	.byte 0x01	# true Stuff
-TRUTH_NOP:	.byte 0x00	# false Stuff
+	# In this section I define some string that has the shape of a lisp program
+	# (so I can design my transducers).
+TEST_1: # This is a syntactically correct code example with comments
+	.ascii ";awer4\n\0\001\002\n((a r (x))\n  (d e (f  g) h #|ada#|#))"
+TEST_1_LEN: .quad . - TEST_1
+TEST_2: # Syntactically incorrect string with an unresolved comment block
+	.ascii ";\n((a r (x))\n  (d e (f  g) h #|ada#))"
+TEST_2_LEN: .quad .  - TEST_2
+TEST_3: # Correct code with a string full of weird parens and escaped double quotes
+	.ascii "(e()\"sd)p(f\\\"89\\\"h\")"
+TEST_3_LEN: .quad . - TEST_3
 	# I might be wrong about implementation details. But I feel that functions that
 	# check cons-ness and truthy-ness (as type) and truth values individually
 	# shold be defined in the IR
