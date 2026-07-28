@@ -1,6 +1,13 @@
-	/* This program is an attempt to build a chain of two Finite State Transducers
-	FST number one should input raw text with S-expressions and output an AST
-	FST number two should input the AST from FST-1 and output x86-64 code
+	/*Hey!. Dear human being reading this file. I started writing this program
+	some time ago. This program is an attempt to build a chain of automatas.
+	after reading and failing to implement my ideas as a chain of FSTs I learned
+	the hard way that I need a stack to buld my ASTs. So I'm moving to learn and
+	implement pushdown transducers (PDTs).
+	PDT number one should input raw text with S-expressions and comments
+	and filter comments.
+	PDT number two should input the text with no comments and output an AST.
+	Automata number 3 should input the AST from PDT-2 and output x86-64 code.
+	I currently don't know what automata number 3 will be.
 	all of this with the hope of building a bootstrap point for the smallest
 	nessesary core from wich the Eccentric IR can be self hosted and then build
 	up to the front-end language.
@@ -16,7 +23,8 @@ _start:
 	For that I just think it should be a constant 16 byte block with
 	both the upper and lower halfs referencing NIL itself
 	referencing the lower half.
-	In this section we define the NIL stuff*/
+	In this section we define the NIL stuff. It should look like this:
+	`(car nil) -> nil` and `(cdr nil) -> nil`*/
 	.section .rodata
 	.align 16	/*We reserve 16 bytes of memory to store the NIL*/
 NIL:	/*The nil is defined here*/
@@ -33,37 +41,37 @@ TEST_2_LEN: .quad .  - TEST_2
 TEST_3: /*Correct code with a string full of weird parens and escaped double quotes*/
 	.ascii "(e()\"sd)p(f\\\"89\\\"h\")"
 TEST_3_LEN: .quad . - TEST_3
-	/* I might be wrong about implementation details. But I feel that functions that
-	 check cons-ness and truthy-ness (as type) and truth values individually
-	 shold be defined in the IR
-	 --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> -->
-	 This section will try to define a first FST that will take raw text with
-	 S-expressions and output an AST made of cons-cells
-	 --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> -->
-	 This FST should consist of 2 sub-machines:
-	 The first machine (which we will call Norie) will ignore comments and
-	 trigger errors when non printable characters are found.
-	 The second machine (called Tribbie) will process the rest of
-	 the valid characters and construct an AST
-	 (no matter if the tree is full of rubbish).
-	 Take for example the following source code:
-	 (TBH this example is mainly for me. I'm deeply afraid of this project)
-	 ```Eccentric
-	 ;;;aasliduhfgalsiubf
-	 #|scñdouiunñoincsdpoinñ{outline
-	 asdikfjbaoubsdouba''90'¿0u|#
+	/*I might be wrong about implementation details. But I feel that functions that
+	check cons-ness and truthy-ness (as type) and truth values individually
+	shold be defined in the IR
+	--> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> -->
+	This section will try to define two PDTs that will take raw text with
+	S-expressions and output an AST made of cons-cells
+	--> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> -->
+	These PDTs will be:
+	Norie: She will ignore comments and trigger errors when non printable
+	characters are found.
+	Tribbie: She will process the rest of the valid characters and construct an AST
+	(no matter if the tree is full of rubbish).
+	Take for example the following source code:
+	(TBH this example is mainly for me. I'm deeply afraid of this project)
+	```Eccentric
+	;;;aasliduhfgalsiubf
+	#|scñdouiunñoincsdpoinñ{outline
+	asdikfjbaoubsdouba''90'¿0u|#
 	
-	 ((a r (x))
-	   (d e (f  g) h))```
-	
-	 It should be processed by Tribbie into:
-	 [o|o]------------------------[o|o]---NIL
-	  |                            |
-	 [o|o]---[o|o]---[o|o]---NIL  [o|o]---[o|o]---[o|o]-----------------[o|o]---NIL
-	  |       |       |            |       |       |                     |
-	  a       r      [o|o]---NIL   d       e      [o|o]---[o|o]---NIL    h
-	                  |                            |       |
-	                  x                            f       g
+	((a r (x))
+	  (d e (f  g) h))```
+
+	It should be processed by Tribbie into:
+	```
+	[o|o]------------------------[o|o]---NIL
+	 |                            |
+	[o|o]---[o|o]---[o|o]---NIL  [o|o]---[o|o]---[o|o]-----------------[o|o]---NIL
+	 |       |       |            |       |       |                     |
+	 a       r      [o|o]---NIL   d       e      [o|o]---[o|o]---NIL    h
+	                 |                            |       |
+	                 x                            f       g```
 	--> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> -->
 	HEY,LISTEN!: Section about assembly conventions and goals
 	--> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> -->
@@ -150,8 +158,8 @@ TEST_3_LEN: .quad . - TEST_3
 	Please don't make me walk for my chocolate upstairs and far neither.
 	In contrast to a CPU. I can get really annoyed with you.
 	If you need machine instructions close in memory all the time this means
-	that instructions are in the lower level repeated a lot. So that every code block
-	can have the closest instance of the instructions needed.
+	that instructions are in the lower level repeated, folded and scrambled a lot.
+	So that every code block can have the closest instance of the instructions needed.
 	This makes the assembly/machine code quite scrambled and hard to separate and rewrite.
 	So the compilers of this gentle world tend to offer you:
 	A: You get to know and easily rewrite your functions while saving space but
@@ -163,6 +171,7 @@ TEST_3_LEN: .quad . - TEST_3
 	These transducers (my first bootstrapping point) will use code that is optimized
 	for the rip register so they go brr and fast.
 	But the core.uwur file (where the IR and other stuff lives) will offer you this:
+	```
 	                   IR
 	                   |
 	                   |
@@ -176,10 +185,15 @@ TEST_3_LEN: .quad . - TEST_3
 	threaded-code flag            cache-friendly flag
 	    |                             |
 	    |                             |
-	threaded machine code         cache-friendly machine code
+	threaded machine code         cache-friendly machine code```
 	This will try to make interactive coding as important and accessible as
 	"set in stone and faster" binaries. So that when you feel the problem you
-	encounter is decently solved, you just compile your stuff with cache friendly stuff*/
+	encounter is decently solved, you just compile your stuff with cache friendly stuff.
+	--> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> -->
+	On constructing Norie UwUr:
+	--> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> -->
+	I used to believe that Norie and Tribbie should be FSTs but now I feel that researching
+	on PDTs it's a better idea to describe them.*/
 	.globl NORIE
 	.text
 NORIE:
