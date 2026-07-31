@@ -172,7 +172,7 @@ TEST_3_LEN: .quad . - TEST_3
 	for the rip register so they go brr and fast.
 	But the core.uwur file (where the IR and other stuff lives) will offer you this:
 	```
-	                   IR
+	               Your Code
 	                   |
 	                   |
 	           compiler-function
@@ -182,18 +182,26 @@ TEST_3_LEN: .quad . - TEST_3
 	    |                             |
 	    |                             |
 	    |                             |
-	threaded-code flag            cache-friendly flag
+	threaded-code flag         cache-friendly flag
 	    |                             |
 	    |                             |
-	threaded machine code         cache-friendly machine code```
+	threaded IR                cache-friendly IR```
 	This will try to make interactive coding as important and accessible as
 	"set in stone and faster" binaries. So that when you feel the problem you
 	encounter is decently solved, you just compile your stuff with cache friendly stuff.
 	--> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> -->
 	On constructing Norie UwUr:
 	--> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> -->
-	I used to believe that Norie and Tribbie should be FSTs but now I feel that researching
-	on PDTs it's a better idea to describe them.*/
+	I used to believe that I knew what Norie should be (an FST)*/
+	.globl CONSER
+	.text
+CONSER:
+	pushq %rbp
+	mov %rsp, %rbp
+	mov %rbp, %rsp
+	pop %rbp
+	ret
+	
 	.globl NORIE
 	.text
 NORIE:
