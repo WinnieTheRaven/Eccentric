@@ -22,20 +22,20 @@ _start:
 	/* Our first desire initiallizing the compiler is to reserve some space to
 	parse string to s-expressions/ASTs. So we reserve a dynamic memory space
 	to allocate our ASTs*/
-	mov $12, %rax	// loading a 12 to make a sys_break with syscall
+	movq $12, %rax	// loading a 12 to make a sys_break with syscall
 	xor %rdi, %rdi	// Zeroing rdi will return the current adress to us
 	syscall	/* We called sys_break and now rax holds the current dynamic
 	memory start adress*/
-	mov %rax, consing_floor(%rip)	/* Now we load the dynamic memory start
+	movq %rax, consing_floor(%rip)	/* Now we load the dynamic memory start
 	adress in consing_floor*/
-	mov %rax, consing_at(%rip)	/*We do the same for the current
+	movq %rax, consing_at(%rip)	/*We do the same for the current
 	consing position*/
-	mov %rax, %rdi	// We store the start of our dynamic memory into rdi
-	lea 4096(%rax), %rdi // We request for a page adding that amount to %rdi
-	mov $12, %rax // We load 12 again in rax to make the sys_break and do the request
+	movq %rax, %rdi	// We store the start of our dynamic memory into rdi
+	leaq 4096(%rax), %rdi // We request for a page adding that amount to %rdi
+	movq $12, %rax // We load 12 again in rax to make the sys_break and do the request
 	syscall	// We syscall
-	mov %rax, consing_ceiling(%rip) // We store the new current ceiling
-	mov $60, %rax // We load 60 to do an exit syscall
+	movq %rax, consing_ceiling(%rip) // We store the new current ceiling
+	movq $60, %rax // We load 60 to do an exit syscall
 	xor %rdi, %rdi // With 0 error code
 	syscall // We exit
 	/* First thing we need to define is THE NIL list.
@@ -221,6 +221,12 @@ TEST_3_LEN: .quad . - TEST_3
 	```*/
 	.globl CONSER
 	.text
+PUSH:
+	pushq %rbp
+	mov %rsp, %rbp
+	mov %rbp, %rsp
+	pop %rbp
+	ret
 CONSER:
 	pushq %rbp
 	mov %rsp, %rbp
