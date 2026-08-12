@@ -9,7 +9,7 @@
 	Automata number 3 should input the AST from PDT-2 and output x86-64 code.
 	I currently don't know what automata number 3 will be.
 	all of this with the hope of building a bootstrap point for the smallest
-	nessesary core from wich the Eccentric IR can be self hosted and then build
+	necessary core from wich the Eccentric IR can be self hosted and then build
 	up to the front-end language.
 	The next three lines define the outline of a cons-cell*/
 	.equ cons_car, 0	# Cons starting point.
@@ -217,16 +217,23 @@ TEST_3_LEN: .quad . - TEST_3
 	--> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> --> -->
 	I used to believe that I knew what Norie should be (an FST).
 	Now I know that she is a PushDown Transducer (PDT).
+	About notation "x,a:b" means: when reading "a" as input then pop A
+	from the stack and push b into the stack'
 	```
+	|--|----|
+	|S0|NULL|-->
+	|--|----|
 	```*/
-	.globl CONSER
+	.globl PUSH_CELL
 	.text
-PUSH:
+PUSH_CELL:
 	pushq %rbp
 	mov %rsp, %rbp
 	mov %rbp, %rsp
 	pop %rbp
 	ret
+	.globl CONSER
+	.text
 CONSER:
 	pushq %rbp
 	mov %rsp, %rbp
