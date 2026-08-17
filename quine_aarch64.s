@@ -1,39 +1,12 @@
 	.global _start
 	.section .text
 _start:
+	stp x29, x30, [sp, #-32]!
+	mov x29, sp
+	str x20, [sp, #16]
 	mov x13, sp
-	ldr x9, =0x34333231300a3023 //43210\n0#//
-	ldr x10, =0x2020666564636261 //  fdecba//
-	stp x9, x10, [sp, #-16]!
-	ldr x9, =0x23202c387820766f //# ,8x vo//
-	ldr x10, =0x3938373635206376 //98765 cv//
-	stp x9, x10, [sp, #-16]!
-	ldr x9, =0x7820766f6d090a30 //x vom\t\n0//
-	ldr x10, =0x73090a33396d090a //s\t\n39m\t\n//
-	stp x9, x10, [sp, #-16]!
-	ldr x9, =0x3623202c38782076 //6# ,8x v//
-	ldr x10, =0x3023202c30232063 //0# ,0# c//
-	stp x9, x10, [sp, #-16]!
-	ldr x9, =0x3678202c32782062 //6x ,2x b//
-	ldr x10, =0x7673090a346f6d09 //vs\t\n4om\t//
-	stp x9, x10, [sp, #-16]!
-	ldr x9, =0x317820766f6d090a //1x vom\t\n//
-	ldr x10, =0x0a3778202c757309 //\n7x ,us\t//
-	stp x9, x10, [sp, #-16]!
-	ldr x9, =0x0a3778202c6f6d09 //\n7x ,om\t//
-	ldr x10, =0x3123202c30782076 //1# ,0x v//
-	stp x9, x10, [sp, #-16]!
-	ldr x9, =0x766f6d090a707320 //vom\t\nps //
-	ldr x10, =0x0a7073202c377820 //\nps ,7x //
-	stp x9, x10, [sp, #-16]!
-	ldr x9, =0x0a3a74726174735f //\n:trats_//
-	ldr x10, =0x2c367820766f6d09 //,6x vom\t//
-	stp x9, x10, [sp, #-16]!
-	ldr x9, =0x6f69746365732e09 //oitces.\t//
-	ldr x10, =0x0a747865742e206e //\ntxet. n//
-	stp x9, x10, [sp, #-16]!
-	ldr x9, =0x6c61626f6c672e09 //labolg.\t//
-	ldr x10, =0x0a74726174735f20 //\ntrats_ //
+	ldr x9, =0x2020202020202020
+	ldr x10, =0x657A2E203A666675
 	stp x9, x10, [sp, #-16]!
 	mov x14, sp
 	adrp x11, repetemp
@@ -44,15 +17,55 @@ _start:
 loadrepestuff:
 	ldrb w16, [x11], #1
 	strb w16, [x12], #1
-	add x15, x13, 1
+	add x15, x15, 1
 	cmp x15, #85
 	b.lt loadrepestuff
+resetadresses:
+	sub x12, x12, #85
+	mov x15, #0
+	mov x17, x14
 printsfirst:
 	mov x8, #64
 	mov x0, #1
 	mov x1, x14
 	mov x2, #51
 	svc #0
+sandwich1:
+	ldrb w16, [x17], #1
+	and w18, w16, #0x0f
+	b nibbletobyte
+	strb w19, [x12], #1
+	and w18, w16, #0xf0
+	lsr w18 ,w18, #4
+	b nibbletobyte
+	strb w19, [x12], #1
+	add x15, x15, #1
+	cmp x15, #8
+	b.lt sandwich1
+	add x12, x12, #30
+sandwich2:
+	ldrb w16, [x17], #1
+	and w18, w16, #0x0f
+	b nibbletobyte
+	strb w19, [x12], #1
+	and w18, w16, #0xf0
+	lsr w18 ,w18, #4
+	b nibbletobyte
+	strb w19, [x12], #1
+	add x15, x15, #1
+	cmp x15, #16
+	b.lt sandwich2
+resumeprinting:
+	sub x12, x12, #85
+	add x12, x12, #13
+	mov x15, #0
+	mov x8, #64
+	mov x0, #1
+	mov x1, repestuff
+	mov x2, 85
+	svc #0
+	cmp x13, x17
+	b.lt sandwich1
 printlast:
 	mov x8, #64
 	mov x0, #1
@@ -61,9 +74,77 @@ printlast:
 	sub x2, x2, #51
 	svc #0
 exitstuff:
+	ldr x20, [sp, #16]
+	ldp x29, x30, [sp], #32
 	mov x0, #0
 	mov x8, #93
 	svc #0
+nibbletobyte:
+	cmp w18, #0x00
+	b.eq cerobyte
+cerobyte:
+	mov w19, #0x30
+	cmp w18, #0x01
+	b.eq onebyte
+onebyte:
+	mov w19, #0x31
+	cmp w18, #0x02
+	b.eq twobyte
+twobyte:
+	mov w19, #0x32
+	cmp w18, #0x03
+	b.eq threebyte
+threebyte:
+	mov w19, #0x33
+	cmp w18, #0x04
+	b.eq fourbyte
+fourbyte:
+	mov w19, #0x34
+	cmp w18, #0x05
+	b.eq fivebyte
+fivebyte:
+	mov w19, #0x35
+	cmp w18, #0x06
+	b.eq sixbyte
+sixbyte:
+	mov w19, #0x36
+	cmp w18, #0x07
+	b.eq sevenbyte
+sevenbyte:
+	mov w19, #0x37
+	cmp w18, #0x08
+	b.eq eigthbyte
+eigthbyte:
+	mov w19, #0x38
+	cmp w18, #0x09
+	b.eq ninebyte
+ninebyte:
+	mov w19, #0x39
+	cmp w18, #0x0a
+	b.eq abyte
+abyte:
+	mov w19, #0x61
+	cmp w18, #0x0b
+	b.eq bbyte
+bbyte:
+	mov w19, #0x62
+	cmp w18, #0x0c
+	b.eq cbyte
+cbyte:
+	mov w19, #0x63
+	cmp w18, #0x0d
+	b.eq dbyte
+dbyte:
+	mov w19, #0x64
+	cmp w18, #0x0e
+	b.eq ebyte
+ebyte:
+	mov w19, #0x65
+	cmp w18, #0x0f
+	b.eq fbyte
+fbyte:
+	mov w19, #0x66
+	ret
 	.section .rodata
 repetemp: .ascii "\n\tldr x9, =0x2020202020202020\n\tldr x10, =0x2020202020202020\n\tstp x9, x10, [sp, #-16]!"
 	.section .bss
