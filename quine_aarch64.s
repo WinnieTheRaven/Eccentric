@@ -40,6 +40,7 @@ loadrepestuff:
 	b.lt loadrepestuff
 resetadresses:
 	sub x12, x12, #85
+	add x12, x12, #28
 	mov x15, #0
 	mov x17, x14
 printfirst:
@@ -51,38 +52,38 @@ printfirst:
 sandwich1:
 	ldrb w16, [x17], #1
 	and w18, w16, #0x0f
-	b nibbletobyte
-	strb w19, [x12], #1
+	bl nibbletobyte
+	strb w19, [x12], #-1
 	and w18, w16, #0xf0
 	lsr w18 ,w18, #4
-	b nibbletobyte
-	strb w19, [x12], #1
+	bl nibbletobyte
+	strb w19, [x12], #-1
 	add x15, x15, #1
 	cmp x15, #8
 	b.lt sandwich1
-	add x12, x12, #30
+	add x12, x12, #46
 sandwich2:
 	ldrb w16, [x17], #1
 	and w18, w16, #0x0f
-	b nibbletobyte
-	strb w19, [x12], #1
+	bl nibbletobyte
+	strb w19, [x12], #-1
 	and w18, w16, #0xf0
 	lsr w18 ,w18, #4
-	b nibbletobyte
-	strb w19, [x12], #1
+	bl nibbletobyte
+	strb w19, [x12], #-1
 	add x15, x15, #1
 	cmp x15, #16
 	b.lt sandwich2
 resumeprinting:
-	sub x12, x12, #85
-	add x12, x12, #13
+	sub x12, x12, #42
+	add x12, x12, #28
 	mov x15, #0
 	mov x8, #64
 	mov x0, #1
 	ldr x1, =repestuff
 	mov x2, #85
 	svc #0
-	cmp x13, x17
+	cmp x17, x13
 	b.lt sandwich1
 printlast:
 	mov x8, #64
