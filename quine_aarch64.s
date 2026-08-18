@@ -42,8 +42,8 @@ resetadresses:
 	sub x12, x12, #85
 	add x12, x12, #43
 	mov x15, #0
-	mov x17, x13
-	mov x20, x14
+	sub x17, x13, #1
+	sub x20, x14, #1
 printfirst:
 	mov x8, #64
 	mov x0, #1
@@ -52,11 +52,11 @@ printfirst:
 	svc #0
 sandwich1:
 	ldrb w16, [x17], #-1
-	and w18, w16, #0x0f
+	and w18, w16, #0xf0 
+	lsr w18 ,w18, #4
 	bl nibbletobyte
 	strb w19, [x12], #1
-	and w18, w16, #0xf0
-	lsr w18 ,w18, #4
+	and w18, w16, #0x0f
 	bl nibbletobyte
 	strb w19, [x12], #1
 	add x15, x15, #1
@@ -65,13 +65,13 @@ sandwich1:
 	sub x12, x12, #46
 sandwich2:
 	ldrb w16, [x17], #-1
-	and w18, w16, #0x0f
-	bl nibbletobyte
-	strb w19, [x12], 1
 	and w18, w16, #0xf0
 	lsr w18 ,w18, #4
 	bl nibbletobyte
 	strb w19, [x12], #1
+	and w18, w16, #0x0f
+	bl nibbletobyte
+	strb w19, [x12], 1
 	add x15, x15, #1
 	cmp x15, #16
 	b.lt sandwich2
