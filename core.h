@@ -13,7 +13,7 @@ typedef struct {
 
 typedef struct {
   const int TypeId;
-  const void* data;
+  void* data;
 } EccParameter;
 
 typedef struct {
