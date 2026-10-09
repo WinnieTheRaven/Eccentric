@@ -8,13 +8,11 @@ typedef struct {
 
 typedef struct {
   const int TypeId;
-  const short IsMutable;
   const void* data;
 } EccConstant;
 
 typedef struct {
   const int TypeId;
-  const short IsMutable;
   const void* data;
 } EccParameter;
 
@@ -25,5 +23,5 @@ typedef struct {
 
 const EccType EccCons = {0, sizeof(Cons), "cons"};
 const EccType EccBool = {1, (size_t)1, "bool"};
-const EccConstant FuckingNil = {0,0,(void *) &FuckingNil};
-const Cons nil = {(void *)&FuckingNil, (void *)&FuckingNil};
+const EccConstant NilData = {0,(void *) &NilData};
+const Cons nil = {(void *) &NilData, (void *) &NilData};
