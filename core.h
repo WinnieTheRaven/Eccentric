@@ -14,21 +14,21 @@ typedef struct {
 } ChainType;
 
 typedef struct {
+  const int TypeId;
   const void* Data;
   const int InputTypeId;
   const int OutputTypeId;
-  const int TypeId;
 } Word;
 
 typedef struct {
+  const int TypeId;
   void* ConsCar;
   void* ConsCdr;
-  const int TypeId;
 } Cons;
 
 typedef struct {
-  uint8_t Data;
   const int TypeId;
+  uint8_t Data;
 } Logic;
 
 //Some type definitions
@@ -37,6 +37,6 @@ const ChainType EccSymbol = {1,"symbol"};
 const AtomType EccBool = {2, 1, "bool"};
 
 //Some important lisp constant primitives
-const Cons nil = {(void *)&nil, (void *)&nil, 0};
-const Logic yep = {1,2};
-const Logic nop = {0,2};
+const Cons nil = {0,(void *)&nil, (void *)&nil};
+const Logic yep = {2,1};
+const Logic nop = {2,0};
