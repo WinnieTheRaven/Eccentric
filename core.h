@@ -3,15 +3,19 @@
 #include <stdint.h>
 
 typedef struct {
-  const int TypeId;
+  const void* ParentType;
   const size_t TypeSize;
   const char* TypeName;
 } AtomType;
 
 typedef struct {
-  const int TypeId;
+  const void* ParentType;
   const char* TypeName;
 } ChainType;
+
+typedef struct {
+  
+} WordType;
 
 typedef struct {
   const int TypeId;
@@ -21,7 +25,7 @@ typedef struct {
 } Word;
 
 typedef struct {
-  const int TypeId;
+  const void* Type;
   void* ConsCar;
   void* ConsCdr;
 } Cons;
@@ -32,9 +36,9 @@ typedef struct {
 } Logic;
 
 //Some type definitions
-const AtomType EccCons = {0, sizeof(Cons), "cons"};
-const ChainType EccSymbol = {1,"symbol"};
-const AtomType EccBool = {2, 1, "bool"};
+const AtomType EccCons = {(void *) &EccCons, sizeof(Cons), "cons"};
+const ChainType EccSymbol = {(void *) &EccSymbol,"symbol"};
+const AtomType EccBool = {(void *) &EccBool, 1, "bool"};
 
 //Some important lisp constant primitives
 const Cons nil = {0,(void *)&nil, (void *)&nil};
