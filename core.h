@@ -25,6 +25,10 @@ typedef struct {
 } Word;
 
 typedef struct {
+  
+}
+
+typedef struct {
   const void* Type;
   void* ConsCar;
   void* ConsCdr;
@@ -37,7 +41,7 @@ typedef struct {
 
 //Some type definitions
 const AtomType EccCons = {(void *) &EccCons, sizeof(Cons), "cons"};
-const ChainType EccSymbol = {(void *) &EccSymbol,"symbol"};
+const AtomType EccSymbol = {(void *) &EccSymbol,3 * sizeof(void *),"symbol"};
 const AtomType EccBool = {(void *) &EccBool, 1, "bool"};
 
 //Some important lisp constant primitives

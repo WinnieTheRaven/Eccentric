@@ -3,29 +3,64 @@
 	.equ cons_cdr, 16
 	
 	.macro atom_type_descriptor type_label, symbol_size, parent_type_address, byte_size, type_name
-	.global type_label
-\type_label :
+	.global \type_label
+	.balign 8
+\type_label\():
 	.quad \symbol_size
 	.quad \parent_type_address
 	.quad \byte_size
-	.byte \type_name
+	.ascii "\type_name"
+	.balign 8
 	.endm
 	
 	.section .rodata
-	.align 8
-	.global tinat
-tinat:
-	.quad 0x000000000000001D
-	.quad tinat
-	.quad 0x0000000000000001
-	.byte 0x74, 0x69, 0x6E, 0x61, 0x74
+
+	atom_type_descriptor tibit, 0x1E, libit, 0x10, "tibit"
+	atom_type_descriptor libit, 0x1E, cobit, 0x10, "libit"
+	atom_type_descriptor cobit, 0x1E, bibit, 0x10, "cobit"
+	atom_type_descriptor bibit, 0x1E, bibit, 0x10, "bibit"
+
+	atom_type_descriptor symbol, 0x1F, cons, 0x18, "symbol"
+
+	atom_type_descriptor cons, 0x1D, cons, 0x18, "cons"
+
+	atom_type_descriptor char, 0x1D, tibit, 0x10, "char"
 	
-	.global linat
-linat:
-	.quad 0x000000000000001D
-	.quad linat
-	.quad 0x0000000000000001
-	.byte 0x74, 0x69, 0x6E, 0x61, 0x74
-	.global system_size
-system_size:	.byte 0xffffffffffffffff
+	atom_type_descriptor tinat, 0x1E, tibit, 0x10, "tinat"
+	atom_type_descriptor linat, 0x1E, libit, 0x10, "linat"
+	atom_type_descriptor conat, 0x1E, cobit, 0x10, "conat"
+	atom_type_descriptor binat, 0x1E, bibit, 0x10, "binat"
+
+	atom_type_descriptor tinint, 0x1F, tibit, 0x10, "tinint"
+	atom_type_descriptor litint, 0x1F, libit, 0x10, "litint"
+	atom_type_descriptor comint, 0x1F, cobit, 0x10, "comint"
+	atom_type_descriptor bigint, 0x1F, bibit, 0x10, "bigint"
+
+	global nil
+nil:
+	.balign 8
+	.quad cons
+	.quad nil
+	.quad nil
+	.balign 8
+
+	global yep
+yep:
+	.balign 8
+	.quad tibit
+	.byte 0xff
+	.balign 8
+
+	global nop
+nop:
+	.balign 8
+	.quad tibit
+	.byte 0x00
+	.balign 8
 	
+	global system_size
+system_size:
+	.balign 8
+	.quad binat
+	.quad 0xffffffffffffffff
+	.balign
