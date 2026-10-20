@@ -21,28 +21,32 @@
 	
 	.section .rodata
 
-	atom_type_descriptor tibit, 0x1E, libit, 0x10, "tibit"
-	atom_type_descriptor libit, 0x1E, cobit, 0x10, "libit"
-	atom_type_descriptor cobit, 0x1E, bibit, 0x10, "cobit"
-	atom_type_descriptor bibit, 0x1E, bibit, 0x10, "bibit"
+	atom_type_descriptor tibit, 0x1E, libit, 0x09, "tibit"
+	atom_type_descriptor libit, 0x1E, cobit, 0x0A, "libit"
+	atom_type_descriptor cobit, 0x1E, bibit, 0x0C, "cobit"
+	atom_type_descriptor bibit, 0x1E, hubit, 0x10, "bibit"
+	atom_type_descriptor hubit, 0x1E, hubit, 0x18, "hubit"
 
 	atom_type_descriptor symbol, 0x1F, cons, 0x18, "symbol"
 
-	atom_type_descriptor cons, 0x1D, cons, 0x18, "cons"
+	atom_type_descriptor cons, 0x1D, hubit, 0x18, "cons"
+	atom_type_descriptor pair, 0x1D, hubit, 0x18, "pair"
 
-	atom_type_descriptor char, 0x1D, tibit, 0x10, "char"
+	atom_type_descriptor char, 0x1D, tibit, 0x09, "char"
 
-	atom_type_descriptor bool, 0x1D, tibit, 0x10, "bool"
+	atom_type_descriptor bool, 0x1D, tibit, 0x09, "bool"
 	
-	atom_type_descriptor tinat, 0x1E, tibit, 0x10, "tinat"
-	atom_type_descriptor linat, 0x1E, libit, 0x10, "linat"
-	atom_type_descriptor conat, 0x1E, cobit, 0x10, "conat"
+	atom_type_descriptor tinat, 0x1E, tibit, 0x09, "tinat"
+	atom_type_descriptor linat, 0x1E, libit, 0x0A, "linat"
+	atom_type_descriptor conat, 0x1E, cobit, 0x0C, "conat"
 	atom_type_descriptor binat, 0x1E, bibit, 0x10, "binat"
+	atom_type_descriptor hunat, 0x1E, hubit, 0x18, "hunat"
 
-	atom_type_descriptor tinint, 0x1F, tibit, 0x10, "tinint"
-	atom_type_descriptor litint, 0x1F, libit, 0x10, "litint"
-	atom_type_descriptor comint, 0x1F, cobit, 0x10, "comint"
+	atom_type_descriptor tinint, 0x1F, tibit, 0x09, "tinint"
+	atom_type_descriptor litint, 0x1F, libit, 0x0A, "litint"
+	atom_type_descriptor comint, 0x1F, cobit, 0x0C, "comint"
 	atom_type_descriptor bigint, 0x1F, bibit, 0x10, "bigint"
+	atom_type_descriptor hugint, 0x1F, hubit, 0x18, "hugint"
 
 	serial_type_descriptor string, 0x1f, char, "string"
 
