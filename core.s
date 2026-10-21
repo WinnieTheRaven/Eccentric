@@ -17,7 +17,17 @@
 	.quad \quotient_type
 	.ascii "\type_name"
 	.balign 8
-	.endm                                                                                         
+	.endm
+
+	.macro live_type_descriptor type_label, symbol_size, type_signature, type_name
+	.global \type_label
+	.balign 8
+\type_label\():
+	.quad \type_signature
+	.quad \quotient_type
+	.ascii "\type_name"
+	.balign 8
+	.endm
 	
 	.section .rodata
 
@@ -26,8 +36,6 @@
 	atom_type_descriptor cobit, 0x1E, bibit, 0x0C, "cobit"
 	atom_type_descriptor bibit, 0x1E, hubit, 0x10, "bibit"
 	atom_type_descriptor hubit, 0x1E, hubit, 0x18, "hubit"
-
-	atom_type_descriptor symbol, 0x1F, cons, 0x18, "symbol"
 
 	atom_type_descriptor cons, 0x1D, hubit, 0x18, "cons"
 	atom_type_descriptor pair, 0x1D, hubit, 0x18, "pair"
