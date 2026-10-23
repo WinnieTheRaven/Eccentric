@@ -31,6 +31,9 @@
 	
 	.section .rodata
 
+welcome_mesage:	.ascii "Hi, Anon!. This is the Eccentric-Winter compiler.\n A compiler for the Eccentric programming language.\nI hope that you find this system interesting and someday useful.\nThe Eccentric-Winter compiler is free software under the GPL 3 licence. Enjoy UwUr.\nEccentric\n       	__\n      ¨¨)°\\\n     ./~~\\\~~\\.\n     _///||\\\\\\_\n    //¨¨/¨/¨¨¨\\\\\n    ---(`(`----- ::WVJ\nHacking with me, anon?.\n"
+welcome_message_length:	.quad . - welcome_mesage
+
 	atom_type_descriptor tibit, 0x1E, libit, 0x09, "tibit"
 	atom_type_descriptor libit, 0x1E, cobit, 0x0A, "libit"
 	atom_type_descriptor cobit, 0x1E, bibit, 0x0C, "cobit"
@@ -91,3 +94,9 @@ system_size:
 	.quad binat
 	.quad 0xffffffffffffffff
 	.balign
+
+	.section .text
+	.globl _start
+_start:
+	cld			//Just clearing the direction flag
+	
