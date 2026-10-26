@@ -1,3 +1,11 @@
+	.macro print_message message, len
+	movq $1, %rax	/*sys_write*/
+	movq $1, %rdi	/*standard output*/
+	leaq \message(%rip), %rsi	/*string address*/
+	movq \len, %rdx	/*string length*/
+	syscall
+	.endm
+
 	.macro atom_type_descriptor type_label, symbol_size, parent_type, byte_size, type_name
 	.global \type_label
 	.balign 8
@@ -31,8 +39,9 @@
 	
 	.section .rodata
 
-welcome_mesage:	.ascii "Hi, Anon!. This is the Eccentric-Winter compiler.\n A compiler for the Eccentric programming language.\nI hope that you find this system interesting and someday useful.\nThe Eccentric-Winter compiler is free software under the GPL 3 licence. Enjoy UwUr.\nEccentric\n       	__\n      ¨¨)°\\\n     ./~~\\\~~\\.\n     _///||\\\\\\_\n    //¨¨/¨/¨¨¨\\\\\n    ---(`(`----- ::WVJ\nHacking with me, anon?.\n"
-welcome_message_length:	.quad . - welcome_mesage
+welcome_message:
+	.ascii "Hi, Anon!. This is the Eccentric-Winter compiler.\nA compiler for the Eccentric programming language.\nI hope that you find this system interesting and someday useful.\nThe Eccentric-Winter compiler is free software under the GPL 3 licence. Enjoy! UwUr.\nEccentric\n       	__\n      ¨¨)°\\\n     ./~~\\\\~~\\.\n     _///||\\\\\\_\n    //¨¨/¨/¨¨¨\\\\\n    ---(`(`----- ::WVJ\nHacking with me, anon?.\n"
+welcome_message_length =	. - welcome_message
 
 	atom_type_descriptor tibit, 0x1E, libit, 0x09, "tibit"
 	atom_type_descriptor libit, 0x1E, cobit, 0x0A, "libit"
@@ -66,7 +75,6 @@ welcome_message_length:	.quad . - welcome_mesage
 	.equ cons_cdr, 16
 	.equ cons_cdr, 24
 
-	global nil
 nil:
 	.balign 8
 	.quad cons
@@ -74,29 +82,31 @@ nil:
 	.quad nil
 	.balign 8
 
-	global yep
 yep:
 	.balign 8
 	.quad bool
 	.byte 0xff
 	.balign 8
 
-	global nop
 nop:
 	.balign 8
 	.quad bool
 	.byte 0x00
 	.balign 8
 	
-	global system_size
 system_size:
 	.balign 8
 	.quad binat
 	.quad 0xffffffffffffffff
 	.balign
 
+	.section .bss
+
 	.section .text
 	.globl _start
 _start:
-	cld			//Just clearing the direction flag
-	
+	cld	/*Just clearing the direction flag*/
+	print_message welcome_message, $welcome_message_length
+	movq $60, %rax
+	xorq %rdi, %rdi
+	syscall
