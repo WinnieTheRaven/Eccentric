@@ -6,6 +6,17 @@
 	syscall
 	.endm
 
+	.macro exit_syscall
+	movq $60, %rax
+	xorq %rdi, %rdi
+	syscall
+	.endm
+	
+	.macro NEXT
+	lodsq /*store the address from %rsi at %rax and increments %rsi by 8*/
+	jmp *(%rax) /*gets to address stored at the address %rax points to*/
+	.endm
+
 	.macro atom_type_descriptor type_label, symbol_size, parent_type, byte_size, type_name
 	.global \type_label
 	.balign 8
@@ -17,7 +28,7 @@
 	.balign 8
 	.endm
 
-	.macro serial_type_descriptor type_label, symbol_size, quotient_type, type_name
+	.macro product_descriptor type_label, symbol_size, quotient_type, type_name
 	.global \type_label
 	.balign 8
 \type_label\():
@@ -27,22 +38,27 @@
 	.balign 8
 	.endm
 
-	.macro live_type_descriptor type_label, symbol_size, type_signature, type_name
-	.global \type_label
+	.macro symbol_descriptor symbol_label, symbol_size, var_start, writable
+	.global \symbol_label
 	.balign 8
-\type_label\():
-	.quad \type_signature
-	.quad \quotient_type
-	.ascii "\type_name"
+\symbol_label\():
+	.quad \symbol_size
+	.quad \var_start
+	.char \writable
+	.ascii "\symbol_label"
 	.balign 8
 	.endm
 	
 	.section .rodata
 
 welcome_message:
-	.ascii "Hi, Anon!. This is the Eccentric-Winter compiler.\nA compiler for the Eccentric programming language.\nI hope that you find this system interesting and someday useful.\nThe Eccentric-Winter compiler is free software under the GPL 3 licence. Enjoy! UwUr.\nEccentric\n       	__\n      ¨¨)°\\\n     ./~~\\\\~~\\.\n     _///||\\\\\\_\n    //¨¨/¨/¨¨¨\\\\\n    ---(`(`----- ::WVJ\nHacking with me, anon?.\n"
+	.ascii "Hi, Anon!. This is the Eccentric-Winter compiler.\nA compiler for the Eccentric programming language.\nI hope that you find this system interesting and someday useful.\nThe Eccentric-Winter compiler is free software under the GPL 3 licence. Enjoy! UwUr.\nEccentric\n       	__\n      ¨¨)°\\\n     ./~~\\\\~~\\.\n     _///||\\\\\\_\n    //¨¨/¨/¨¨¨\\\\\n    ---(`(`----- ::WVJ\nHacking with me, anon?.\n\n\n\n"
 welcome_message_length =	. - welcome_message
 
+prompt_signal:
+	.ascii "UwUr->"
+prompt_signal_length =	. - prompt_signal
+	
 	atom_type_descriptor tibit, 0x1E, libit, 0x09, "tibit"
 	atom_type_descriptor libit, 0x1E, cobit, 0x0A, "libit"
 	atom_type_descriptor cobit, 0x1E, bibit, 0x0C, "cobit"
@@ -68,7 +84,7 @@ welcome_message_length =	. - welcome_message
 	atom_type_descriptor bigint, 0x1F, bibit, 0x10, "bigint"
 	atom_type_descriptor hugint, 0x1F, hubit, 0x18, "hugint"
 
-	serial_type_descriptor string, 0x1f, char, "string"
+	product_descriptor string, 0x1f, char, "string"
 
 	.equ cons_desc, 0
 	.equ cons_car, 8	
@@ -93,6 +109,9 @@ nop:
 	.quad bool
 	.byte 0x00
 	.balign 8
+
+input_buffer_length:
+	.quad 0x1000000000000
 	
 system_size:
 	.balign 8
@@ -101,12 +120,17 @@ system_size:
 	.balign
 
 	.section .bss
+	.lcomm input_buffer, 4096
 
 	.section .text
 	.globl _start
 _start:
 	cld	/*Just clearing the direction flag*/
 	print_message welcome_message, $welcome_message_length
-	movq $60, %rax
+	print_message prompt_signal, $prompt_signal_length
+	xorq %rax, %rax
 	xorq %rdi, %rdi
+	leaq input_buffer(%rip), %rsi
+	movq $input_buffer_length, %rdx
 	syscall
+	exit_syscall
