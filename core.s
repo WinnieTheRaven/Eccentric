@@ -13,78 +13,89 @@
 	.endm
 	
 	.macro NEXT
-	lodsq /*store the address from %rsi at %rax and increments %rsi by 8*/
-	jmp *(%rax) /*gets to address stored at the address %rax points to*/
+	lodsq /*loads address from rsi at rax and shifts rsi by 8*/
+	jmp *(%rax) /*hops to address stored at address rax points*/
 	.endm
 
-	.macro atom_type_descriptor type_label, symbol_size, parent_type, byte_size, type_name
-	.global \type_label
+	.macro atom label, size, parent, precision, type_name
+	.global \label
 	.balign 8
-\type_label\():
-	.quad \symbol_size
-	.quad \parent_type
-	.quad \byte_size
+\label\():
+	.quad \size /*This is the size of the descriptor itself*/
+	.quad \parent
+	.quad \presicion
 	.ascii "\type_name"
 	.balign 8
 	.endm
 
-	.macro product_descriptor type_label, symbol_size, quotient_type, type_name
-	.global \type_label
+	.macro amorph label, size, 
+
+	.macro product label, size, quotient_type, type_name
+	.global \label
 	.balign 8
-\type_label\():
-	.quad \symbol_size
+\label\():
+	.quad \size /*This is the size of the descriptor itself*/
 	.quad \quotient_type
 	.ascii "\type_name"
 	.balign 8
 	.endm
 
-	.macro symbol_descriptor symbol_label, symbol_size, var_start, writable
-	.global \symbol_label
+	.macro symbol label, size, place, mutable, home, pointed_type
+	.global \label
 	.balign 8
-\symbol_label\():
-	.quad \symbol_size
-	.quad \var_start
-	.char \writable
-	.ascii "\symbol_label"
+\label\():
+	.quad \size /*This is the size of the symbol itself*/
+	.quad \pointed_type
+	.quad \place
+	.quad \home
+	.char \mutable
+	.ascii "\label"
 	.balign 8
 	.endm
 	
 	.section .rodata
 
 welcome_message:
-	.ascii "Hi, Anon!. This is the Eccentric-Winter compiler.\nA compiler for the Eccentric programming language.\nI hope that you find this system interesting and someday useful.\nThe Eccentric-Winter compiler is free software under the GPL 3 licence. Enjoy! UwUr.\nEccentric\n       	__\n      ¨¨)°\\\n     ./~~\\\\~~\\.\n     _///||\\\\\\_\n    //¨¨/¨/¨¨¨\\\\\n    ---(`(`----- ::WVJ\nHacking with me, anon?.\n\n\n\n"
+	.ascii "Hi, Anon!. This is the Eccentric-Winter compiler.\nA "
+	.ascii "compiler for the Eccentric programming language.\nI "
+	.ascii "hope that you find this system interesting and "
+	.ascii "someday useful.\nThe Eccentric-Winter compiler is "
+	.ascii "free software under the GPL 3 licence.\nEnjoy! UwUr."
+	.ascii "\nEccentric\n       	__\n      ¨¨)°\\\n     ./~~\\"
+	.ascii "\\~~\\.\n     _///||\\\\\\_\n    //¨¨/¨/¨¨¨\\\\\n    "
+	.ascii "---(`(`----- ::WVJ\nHacking with me, anon?.\n\n\n\n"
 welcome_message_length =	. - welcome_message
 
 prompt_signal:
 	.ascii "UwUr->"
 prompt_signal_length =	. - prompt_signal
 	
-	atom_type_descriptor tibit, 0x1E, libit, 0x09, "tibit"
-	atom_type_descriptor libit, 0x1E, cobit, 0x0A, "libit"
-	atom_type_descriptor cobit, 0x1E, bibit, 0x0C, "cobit"
-	atom_type_descriptor bibit, 0x1E, hubit, 0x10, "bibit"
-	atom_type_descriptor hubit, 0x1E, hubit, 0x18, "hubit"
+	atom tibit, 0x1E, libit, 0x09, "tibit"
+	atom libit, 0x1E, cobit, 0x0A, "libit"
+	atom cobit, 0x1E, bibit, 0x0C, "cobit"
+	atom bibit, 0x1E, hubit, 0x10, "bibit"
+	atom hubit, 0x1E, hubit, 0x18, "hubit"
 
-	atom_type_descriptor cons, 0x1D, hubit, 0x18, "cons"
-	atom_type_descriptor pair, 0x1D, hubit, 0x18, "pair"
+	atom cons, 0x1D, hubit, 0x18, "cons"
+	atom pair, 0x1D, hubit, 0x18, "pair"
 
-	atom_type_descriptor char, 0x1D, tibit, 0x09, "char"
+	atom char, 0x1D, tibit, 0x09, "char"
 
-	atom_type_descriptor bool, 0x1D, tibit, 0x09, "bool"
+	atom bool, 0x1D, tibit, 0x09, "bool"
 	
-	atom_type_descriptor tinat, 0x1E, tibit, 0x09, "tinat"
-	atom_type_descriptor linat, 0x1E, libit, 0x0A, "linat"
-	atom_type_descriptor conat, 0x1E, cobit, 0x0C, "conat"
-	atom_type_descriptor binat, 0x1E, bibit, 0x10, "binat"
-	atom_type_descriptor hunat, 0x1E, hubit, 0x18, "hunat"
+	atom tinat, 0x1E, tibit, 0x09, "tinat"
+	atom linat, 0x1E, libit, 0x0A, "linat"
+	atom conat, 0x1E, cobit, 0x0C, "conat"
+	atom binat, 0x1E, bibit, 0x10, "binat"
+	atom hunat, 0x1E, hubit, 0x18, "hunat"
 
-	atom_type_descriptor tinint, 0x1F, tibit, 0x09, "tinint"
-	atom_type_descriptor litint, 0x1F, libit, 0x0A, "litint"
-	atom_type_descriptor comint, 0x1F, cobit, 0x0C, "comint"
-	atom_type_descriptor bigint, 0x1F, bibit, 0x10, "bigint"
-	atom_type_descriptor hugint, 0x1F, hubit, 0x18, "hugint"
+	atom tinint, 0x1F, tibit, 0x09, "tinint"
+	atom litint, 0x1F, libit, 0x0A, "litint"
+	atom comint, 0x1F, cobit, 0x0C, "comint"
+	atom bigint, 0x1F, bibit, 0x10, "bigint"
+	atom hugint, 0x1F, hubit, 0x18, "hugint"
 
-	product_descriptor string, 0x1f, char, "string"
+	product string, 0x1f, char, "string"
 
 	.equ cons_desc, 0
 	.equ cons_car, 8	
